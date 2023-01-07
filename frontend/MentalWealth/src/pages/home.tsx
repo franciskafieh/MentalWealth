@@ -1,10 +1,11 @@
-import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantineTheme, Space, Anchor, Group } from "@mantine/core";
+import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantineTheme, Space, Anchor, Group, Box } from "@mantine/core";
 import { fetcher } from "../utils/fetcher";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
 import { IconDots } from "@tabler/icons";
 import { hexToRgb } from "../utils/colors";
 import dayjs from "dayjs";
+import { MoodChart } from "../components/moodLineChart";
 
 function getHalfOpacityFromHex(hex: string) {
     const [r, g, b] = hexToRgb(hex);
@@ -24,8 +25,9 @@ const useStyles = createStyles((theme) => ({
 const Home = (): JSX.Element => {
     return (
         <>
-            <Title mt="lg" style={{paddingTop: "0"}}>Great to see you, {useApiStore((state) => state.user).userName}!</Title>
+            <Title order={1} mb="sm">Good to see you, {useApiStore((state) => state.user).userName}.</Title>
             <Text mt="xs">Your Mood Over the Last X Days</Text>
+            <MoodChart></MoodChart>
             <Text mt="xs">Your Journal Entries</Text>
             <JournalEntries></JournalEntries>
             <Text mt="xs">Start an Anonymous Chat</Text>
@@ -63,14 +65,14 @@ function JournalEntries() {
             
             >
                 {data.data.sort((a, b) => Number.parseInt(b.updatedAt) - Number.parseInt(a.updatedAt)).slice(0,10).map((entry) => 
-                    <Card shadow="lg" p="lg" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
+                    <Card shadow="sm" p="lg" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
                         <Text fz="xl" truncate>{entry.title}</Text>
 
                         Last edited
                         {" " + dayjs(entry.updatedAt).format("MMM D, YYYY [at] h:mm A")}
                     </Card>
                 )}
-                <Card shadow="lg" p="lg" radius="md" withBorder component="a"
+                <Card shadow="sm" p="lg" radius="md" withBorder component="a"
                 href="/journal" className={classes.createJournalCard}> 
                     <Center>
                         <Group spacing="xs">
