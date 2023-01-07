@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Ganss.Xss;
 using MentalWealth.Data;
 using MentalWealth.Data.Entities;
 using MentalWealth.Data.Models.Requests;
@@ -18,11 +19,13 @@ public class JournalsController : Controller
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly HtmlSanitizer _htmlSanitizer;
 
-    public JournalsController(ApplicationDbContext dbContext, IMapper mapper)
+    public JournalsController(ApplicationDbContext dbContext, IMapper mapper, HtmlSanitizer htmlSanitizer)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _htmlSanitizer = htmlSanitizer;
     }
 
     [HttpGet]
@@ -66,6 +69,7 @@ public class JournalsController : Controller
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var journal = _mapper.Map<JournalEntry>(request);
+        journal.Content = _htmlSanitizer.Sanitize(request.Content);
         journal.AuthorId = userId!;
 
         _dbContext.JournalEntries.Add(journal);
@@ -86,6 +90,7 @@ public class JournalsController : Controller
         if (journal == null || journal.AuthorId != userId) return NotFound();
 
         _mapper.Map(request, journal);
+        journal.Content = _htmlSanitizer.Sanitize(request.Content);
         await _dbContext.SaveChangesAsync();
 
         return NoContent();

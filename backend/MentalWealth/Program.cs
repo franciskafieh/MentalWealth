@@ -1,3 +1,4 @@
+using Ganss.Xss;
 using MentalWealth.Auth;
 using MentalWealth.Data;
 using Microsoft.OpenApi.Models;
@@ -38,6 +39,7 @@ builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddSingleton<HtmlSanitizer>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMemoryCache();
