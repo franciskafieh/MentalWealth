@@ -25,13 +25,14 @@ const WrappedApp = (props: AppProps & { colorScheme: ColorScheme, session: Sessi
     ]);
 
     return (
-        <ColorSchemeProvider colorScheme={pageProps.colorScheme} toggleColorScheme={toggleColorScheme}>
+        <ColorSchemeProvider colorScheme={cScheme} toggleColorScheme={toggleColorScheme}>
             <SessionProvider session={pageProps.session}>
                 <MantineProvider
                     withGlobalStyles={true}
                     withNormalizeCSS={true}
                     theme={{
                         colorScheme: cScheme,
+                        primaryColor: "orange",
                     }}
                 >
                     <Component {...pageProps} />

@@ -1,6 +1,8 @@
-import { Box, Center, Text, Title, createStyles } from "@mantine/core";
+import { ActionIcon, Box, Button, Center, Group, Text, Title, createStyles, useMantineColorScheme } from "@mantine/core";
+import { IconMoon, IconMoonStars, IconSun } from "@tabler/icons";
 
 import { FeaturesSection } from "../components/featuresSection";
+import Link from "next/link";
 import { ScrollAction } from "../components/scrollAction";
 import { useScrollIntoView } from "@mantine/hooks";
 
@@ -27,10 +29,18 @@ const useStyles = createStyles((theme) => ({
     featuresContainer: {
         minHeight: "100vh",
     },
+    navigationContainer: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        left: 0,
+    },
 }));
 
 const Home = (): JSX.Element => {
     const { classes } = useStyles();
+
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
     const { scrollIntoView: scrollToFirstSection, targetRef: firstSectionRef } = useScrollIntoView({
         duration: 500,
@@ -53,6 +63,23 @@ const Home = (): JSX.Element => {
                     A mental health app for the modern world.
                 </Text>
                 <ScrollAction callback={scrollToFirstSection} />
+                <Box className={classes.navigationContainer}>
+                    <Group position="apart" m="sm">
+                        <ActionIcon
+                            variant="outline"
+                            color="orange"
+                            onClick={() => toggleColorScheme()}
+                        >{colorScheme === "dark" ? <IconSun /> : <IconMoonStars />}</ActionIcon>
+                        <Group>
+                            <Button component={Link} href="/auth/signin" variant="outline" color="orange">
+                            Sign in
+                            </Button>
+                            <Button component={Link} href="/auth/register" variant="outline" color="orange">
+                            Register
+                            </Button>
+                        </Group>
+                    </Group>
+                </Box>
             </Center>
             <Center className={classes.featuresContainer} ref={firstSectionRef as any}>
                 <FeaturesSection title="Something for everyone" description="Whether it's getting or giving help, we've got you covered." />
