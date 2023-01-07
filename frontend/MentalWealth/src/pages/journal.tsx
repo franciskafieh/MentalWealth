@@ -199,7 +199,7 @@ const Journal = (): JSX.Element => {
 
     return (
         <Box>
-            <Group position="apart">
+            <Group position="apart" mb="xs">
                 <Title order={1} mb="sm">
                     Journal
                 </Title>
