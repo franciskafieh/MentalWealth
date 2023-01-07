@@ -1,4 +1,4 @@
-import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantineTheme, Space, Anchor } from "@mantine/core";
+import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantineTheme, Space, Anchor, Group } from "@mantine/core";
 import { fetcher } from "../utils/fetcher";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
@@ -38,14 +38,6 @@ const Home = (): JSX.Element => {
 
 function JournalEntries() {
     const { classes } = useStyles();
-    const theme = useMantineTheme();
-
-    type Entries = {
-        title?: string;
-        moodLevel?: number;
-        createdAt?: string;
-        updatedAt?: string;
-    }
 
     const { status, data } = useQuery({
         queryKey: ["JournalEntries"],
@@ -57,7 +49,7 @@ function JournalEntries() {
 
 
 
-    if (status === "loading") return <Loader></Loader>;
+    if (status === "loading") return <Loader variant="bars"></Loader>;
     if (status === "error") return <Text>Error</Text>;
     if (status === "success") {
         return (
@@ -70,9 +62,8 @@ function JournalEntries() {
                     ]}
             
             >
-                {/* TODO: HREF */}
-                {data.data.slice(0,10).map((entry: Entries) => 
-                    <Card shadow="lg" p="lg" radius="md" withBorder component="a" href="">
+                {data.data.sort((a, b) => Number.parseInt(b.updatedAt) - Number.parseInt(a.updatedAt)).slice(0,10).map((entry) => 
+                    <Card shadow="lg" p="lg" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
                         <Text fz="xl" truncate>{entry.title}</Text>
 
                         Last edited
@@ -82,9 +73,10 @@ function JournalEntries() {
                 <Card shadow="lg" p="lg" radius="md" withBorder component="a"
                 href="/journal" className={classes.createJournalCard}> 
                     <Center>
-                        <Text fw={700} fz="lg">See All</Text>
-                        <Space w="xs" />
-                        <IconDots size={48}></IconDots>
+                        <Group spacing="xs">
+                            <Text fw={700} fz="xl">See All</Text>
+                            <IconDots size={48}></IconDots>
+                        </Group>
                     </Center>
                 </Card>
             </SimpleGrid>

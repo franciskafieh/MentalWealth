@@ -16,7 +16,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { FullScreenLoading } from "../components/fullScreenLoading";
 import Highlight from "@tiptap/extension-highlight";
-import { IconColorPicker } from "@tabler/icons";
 import { JournalEntryCard } from "../components/journalEntryCard";
 import { MoodRating } from "../components/moodRating";
 import StarterKit from "@tiptap/starter-kit";
