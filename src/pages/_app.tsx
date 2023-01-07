@@ -5,16 +5,27 @@ import { SessionProvider } from "next-auth/react";
 import { api } from "../utils/api";
 
 import "../styles/globals.css";
+import { MantineProvider } from "@mantine/core";
 
 const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
+    // eslint-disable-next-line react/prop-types
+    Component,
+    // eslint-disable-next-line react/prop-types
+    pageProps: { session, ...pageProps },
 }) => {
-  return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
-  );
+    return (
+        <SessionProvider session={session}>
+            <MantineProvider
+                withGlobalStyles={true}
+                withNormalizeCSS={true}
+                theme={{
+                    colorScheme: "light",
+                }}
+            >
+                <Component {...pageProps} />
+            </MantineProvider>
+        </SessionProvider>
+    );
 };
 
 export default api.withTRPC(MyApp);

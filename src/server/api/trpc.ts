@@ -22,9 +22,9 @@ import { type Session } from "next-auth";
 import { getServerAuthSession } from "../auth";
 import { prisma } from "../db";
 
-type CreateContextOptions = {
+interface CreateContextOptions {
   session: Session | null;
-};
+}
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use
@@ -36,10 +36,10 @@ type CreateContextOptions = {
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
 const createInnerTRPCContext = async (opts: CreateContextOptions) => {
-  return {
-    session: opts.session,
-    prisma,
-  };
+    return {
+        session: opts.session,
+        prisma,
+    };
 };
 
 /**
@@ -48,14 +48,14 @@ const createInnerTRPCContext = async (opts: CreateContextOptions) => {
  * @link https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req, res } = opts;
+    const { req, res } = opts;
 
-  // Get the session from the server using the unstable_getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
+    // Get the session from the server using the unstable_getServerSession wrapper function
+    const session = await getServerAuthSession({ req, res });
 
-  return await createInnerTRPCContext({
-    session,
-  });
+    return await createInnerTRPCContext({
+        session,
+    });
 };
 
 /**
@@ -68,13 +68,13 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 
 const t = initTRPC
-  .context<Awaited<ReturnType<typeof createTRPCContext>>>()
-  .create({
-    transformer: superjson,
-    errorFormatter({ shape }) {
-      return shape;
-    },
-  });
+    .context<Awaited<ReturnType<typeof createTRPCContext>>>()
+    .create({
+        transformer: superjson,
+        errorFormatter({ shape }) {
+            return shape;
+        },
+    });
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -103,15 +103,15 @@ export const publicProcedure = t.procedure;
  * procedure
  */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+    if (!ctx.session?.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next({
+        ctx: {
+            // infers the `session` as non-nullable
+            session: { ...ctx.session, user: ctx.session.user },
+        },
+    });
 });
 
 /**
