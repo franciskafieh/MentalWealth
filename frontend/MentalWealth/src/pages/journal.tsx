@@ -54,7 +54,7 @@ const CreateEntryModalContent = (): JSX.Element => {
     const form = useForm({
         initialValues: {
             title: "",
-            moodLevel: 10,
+            moodLevel: 0,
         },
         validate: {
             moodLevel: (value) => {
@@ -153,7 +153,7 @@ const CreateEntryModalContent = (): JSX.Element => {
 
                     <RichTextEditor.Content />
                 </RichTextEditor>
-                <Button type="submit">Save</Button>
+                <Button type="submit" loading={createEntry.isLoading}>Save</Button>
             </form>
         </Box>
     );
