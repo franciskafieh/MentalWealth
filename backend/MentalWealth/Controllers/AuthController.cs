@@ -44,7 +44,28 @@ public class AuthController : Controller
 
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        {
+            foreach (var error in result.Errors)
+            {
+                switch (error.Code)
+                {
+                    case "DuplicateUserName":
+                        ModelState.AddModelError(nameof(request.UserName), error.Description);
+                        break;
+                    case "DuplicateEmail":
+                        ModelState.AddModelError(nameof(request.Email), error.Description);
+                        break;
+                    case "PasswordTooShort":
+                        ModelState.AddModelError(nameof(request.Password), error.Description);
+                        break;
+                    default:
+                        ModelState.AddModelError(nameof(request.UserName), error.Description);
+                        break;
+                }
+            }
+
+            return ValidationProblem();
+        }
 
 
         return NoContent();
@@ -147,5 +168,26 @@ public class AuthController : Controller
             ExpiresAt = authToken.ValidTo,
             User = userResponse
         });
+    }
+
+    [HttpDelete("Logout")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> Logout()
+    {
+        var token = Request.Cookies["refreshToken"];
+
+        if (string.IsNullOrEmpty(token))
+            return NoContent();
+
+        Response.Cookies.Delete("refreshToken");
+
+        var refreshToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);
+        if (refreshToken == null)
+            return NoContent();
+
+        _dbContext.RefreshTokens.Remove(refreshToken);
+        await _dbContext.SaveChangesAsync();
+
+        return NoContent();
     }
 }
