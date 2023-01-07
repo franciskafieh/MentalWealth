@@ -1,9 +1,7 @@
 import {
     ActionIcon,
     AppShell,
-    Box,
     Burger,
-    Button,
     Center,
     Container,
     Drawer,
@@ -17,7 +15,7 @@ import {
     useMantineColorScheme,
     useMantineTheme,
 } from "@mantine/core";
-import { IconChevronDown, IconDashboard, IconLogout, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
+import { IconLogout, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
 import { Link, Outlet } from "react-router-dom";
 
 import { apiStateHandler } from "../../utils/apiStateHandler";

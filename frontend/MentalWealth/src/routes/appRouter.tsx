@@ -10,6 +10,7 @@ export const AppRouter = () => {
     const LoginPage = lazy(() => import("../pages/auth/login"));
     const RegisterPage = lazy(() => import("../pages/auth/register"));
     const HomePage = lazy(() => import("../pages/home"));
+    const JournalPage = lazy(() => import("../pages/journal"));
 
     const ProtectedLayout = lazy(() => import("./layouts/protectedLayout"));
 
@@ -24,6 +25,7 @@ export const AppRouter = () => {
                 <Route element={<RequireAuth />}>
                     <Route element={<ProtectedLayout />}>
                         <Route path="/home" element={<HomePage />} />
+                        <Route path="/journal" element={<JournalPage />} />
                     </Route>
                 </Route>
             </Routes>

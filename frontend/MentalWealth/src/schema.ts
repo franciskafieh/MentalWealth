@@ -271,6 +271,8 @@ export interface components {
       content: string;
     };
     JournalIndexResponse: {
+      /** Format: int32 */
+      id?: number;
       title?: string | null;
       /** Format: int32 */
       moodLevel?: number;

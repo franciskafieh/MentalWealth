@@ -50,14 +50,14 @@ const Register = (): JSX.Element => {
     const { classes } = useStyles();
 
     const register = useMutation({
-        mutationFn: async (values: components["schemas"]["RegisterRequest"]) => {
+        mutationFn: (values: components["schemas"]["RegisterRequest"]) => {
             const register = fetcher.path("/Auth/Register").method("post").create();
             return register(values);
         },
     });
 
     const logIn = useMutation({
-        mutationFn: async (values: components["schemas"]["LoginRequest"]) => {
+        mutationFn: (values: components["schemas"]["LoginRequest"]) => {
             const logIn = fetcher.path("/Auth/Login").method("post").create();
             return logIn(values);
         }
