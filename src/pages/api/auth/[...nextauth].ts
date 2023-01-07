@@ -6,7 +6,10 @@ import bcrypt from "bcrypt";
 import { prisma } from "../../../server/db";
 
 export const authOptions: NextAuthOptions = {
-    // Include user.id on session
+    pages: {
+        signIn: "/auth/signin",
+        error: "/auth/signin"
+    },
     callbacks: {
         session({ session, user }) {
             if (session.user) {
@@ -15,7 +18,6 @@ export const authOptions: NextAuthOptions = {
             return session;
         },
     },
-    // Configure one or more authentication providers
     adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
@@ -26,7 +28,7 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Missing email or password");
+                    throw new Error("MISSING_CREDENTIALS");
                 }
 
                 const user = await prisma.user.findUnique({
@@ -35,12 +37,12 @@ export const authOptions: NextAuthOptions = {
                     },
                 });
                 if (!user) {
-                    throw new Error("No user found");
+                    throw new Error("NOT_FOUND");
                 }
 
                 const isValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isValid) {
-                    throw new Error("Invalid password");
+                    throw new Error("INVALID_PASSWORD");
                 }
 
                 return user;

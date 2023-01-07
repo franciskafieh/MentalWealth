@@ -14,8 +14,6 @@ const WrappedApp = (props: AppProps & { colorScheme: ColorScheme, session: Sessi
     const { Component, pageProps } = props;
     const [cScheme, setCScheme] = useState<ColorScheme>(pageProps.colorScheme);
 
-    console.log(props);
-
     const toggleColorScheme = (value?: ColorScheme) => {
         const nextColorScheme = value || (pageProps.colorSheme === "dark" ? "light" : "dark");
         setCScheme(nextColorScheme);
