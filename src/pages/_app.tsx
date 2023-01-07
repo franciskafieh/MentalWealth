@@ -1,31 +1,58 @@
-import { type AppType } from "next/app";
+import App, { AppProps } from "next/app";
 import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { useHotkeys } from "@mantine/hooks";
+import { SessionProvider, getSession } from "next-auth/react";
 
 import { api } from "../utils/api";
 
 import "../styles/globals.css";
-import { MantineProvider } from "@mantine/core";
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
+import { setCookie } from "cookies-next";
+import { useState } from "react";
 
-const MyApp: AppType<{ session: Session | null }> = ({
-    // eslint-disable-next-line react/prop-types
-    Component,
-    // eslint-disable-next-line react/prop-types
-    pageProps: { session, ...pageProps },
-}) => {
+const WrappedApp = (props: AppProps & { colorScheme: ColorScheme, session: Session | null }) => {
+    const { Component, pageProps } = props;
+    const [cScheme, setCScheme] = useState<ColorScheme>(pageProps.colorScheme);
+
+    console.log(props);
+
+    const toggleColorScheme = (value?: ColorScheme) => {
+        const nextColorScheme = value || (pageProps.colorSheme === "dark" ? "light" : "dark");
+        setCScheme(nextColorScheme);
+        // when color scheme is updated save it to cookie
+        setCookie("mantine-color-scheme", nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
+    };
+
+    useHotkeys([
+        ["mod+J", () => toggleColorScheme()],
+    ]);
+
     return (
-        <SessionProvider session={session}>
-            <MantineProvider
-                withGlobalStyles={true}
-                withNormalizeCSS={true}
-                theme={{
-                    colorScheme: "light",
-                }}
-            >
-                <Component {...pageProps} />
-            </MantineProvider>
-        </SessionProvider>
+        <ColorSchemeProvider colorScheme={pageProps.colorScheme} toggleColorScheme={toggleColorScheme}>
+            <SessionProvider session={pageProps.session}>
+                <MantineProvider
+                    withGlobalStyles={true}
+                    withNormalizeCSS={true}
+                    theme={{
+                        colorScheme: cScheme,
+                    }}
+                >
+                    <Component {...pageProps} />
+                </MantineProvider>
+            </SessionProvider>
+        </ColorSchemeProvider>
     );
 };
 
-export default api.withTRPC(MyApp);
+WrappedApp.getInitialProps = async (ctx) => {
+    const appProps = await App.getInitialProps(ctx);
+
+    appProps.pageProps = {
+        colorScheme: ctx.ctx.req.cookies["mantine-color-scheme"] || "light",
+        session: await getSession(ctx),
+    };
+
+    return appProps;
+};
+
+export default api.withTRPC(WrappedApp);
