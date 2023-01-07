@@ -2,8 +2,9 @@ import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantine
 import { fetcher } from "../utils/fetcher";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
-import { IconDots, IconTextPlus } from "@tabler/icons";
+import { IconDots } from "@tabler/icons";
 import { hexToRgb } from "../utils/colors";
+import dayjs from "dayjs";
 
 function getHalfOpacityFromHex(hex: string) {
     const [r, g, b] = hexToRgb(hex);
@@ -75,7 +76,7 @@ function JournalEntries() {
                         <Text fz="xl" truncate>{entry.title}</Text>
 
                         Last edited
-                        {" " + new Date(Date.parse(entry.updatedAt)).toLocaleString("en-US", {dateStyle: "long", timeStyle: "short"})}
+                        {" " + dayjs(entry.updatedAt).format("MMM D, YYYY [at] h:mm A")}
                     </Card>
                 )}
                 <Card shadow="lg" p="lg" radius="md" withBorder component="a"
