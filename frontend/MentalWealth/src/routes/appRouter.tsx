@@ -12,6 +12,7 @@ export const AppRouter = () => {
     const HomePage = lazy(() => import("../pages/home"));
     const JournalPage = lazy(() => import("../pages/journal"));
     const ViewJournalPage = lazy(() => import("../pages/viewJournal"));
+    const FourOFour = lazy(() => import("../pages/error/fourOFour"));
 
     const ProtectedLayout = lazy(() => import("./layouts/protectedLayout"));
 
@@ -30,6 +31,7 @@ export const AppRouter = () => {
                         <Route path="/journal/:id" element={<ViewJournalPage />} />
                     </Route>
                 </Route>
+                <Route path="*" element={<FourOFour />} />
             </Routes>
         </Suspense>
     );
