@@ -58,13 +58,13 @@ export const JournalEntryCard = ({
                         <Button sx={{ alignSelf: "flex-start" }} component={Link} to={`/journal/${journalEntry.id}`}>View entry</Button>
                         <Group mt="xs">
                             <Box>
-                                <Text color="dimmed" size="xs">Created at</Text>
+                                <Text color="dimmed" size="xs">Created on</Text>
                                 <Text size="sm">
                                     {dayjs(journalEntry.createdAt).format("DD MMM YYYY")}
                                 </Text>
                             </Box>
                             <Box>
-                                <Text color="dimmed" size="xs">Updated at</Text>
+                                <Text color="dimmed" size="xs">Updated on</Text>
                                 <Text size="sm">
                                     {dayjs(journalEntry.updatedAt).format("DD MMM YYYY")}
                                 </Text>
