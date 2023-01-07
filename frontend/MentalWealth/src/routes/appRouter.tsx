@@ -11,6 +11,8 @@ export const AppRouter = () => {
     const RegisterPage = lazy(() => import("../pages/auth/register"));
     const HomePage = lazy(() => import("../pages/home"));
 
+    const ProtectedLayout = lazy(() => import("./layouts/protectedLayout"));
+
     return (
         <Suspense fallback={<FullScreenLoading />}>
             <Routes>
@@ -20,7 +22,9 @@ export const AppRouter = () => {
                     <Route path="/auth/register" element={<RegisterPage />} />
                 </Route>
                 <Route element={<RequireAuth />}>
-                    <Route path="/home" element={<HomePage />} />
+                    <Route element={<ProtectedLayout />}>
+                        <Route path="/home" element={<HomePage />} />
+                    </Route>
                 </Route>
             </Routes>
         </Suspense>
