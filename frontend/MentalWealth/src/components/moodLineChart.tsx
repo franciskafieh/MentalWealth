@@ -49,8 +49,8 @@ export const options = {
         }
     },
 };
-// sun...mon...tue...wed...thurs...friday...sat
-const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Yesterday', 'Today']; // remove labels where no data is available
+
+const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Yesterday', 'Today'];
 
 
 

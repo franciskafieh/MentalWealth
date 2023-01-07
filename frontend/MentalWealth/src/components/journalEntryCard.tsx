@@ -5,9 +5,6 @@ import { components } from "../schema";
 import dayjs from "dayjs";
 
 const useStyles = createStyles((theme) => ({
-    card: {
-        backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    },
     label: {
         lineHeight: 1,
     },
@@ -48,7 +45,7 @@ export const JournalEntryCard = ({
     const { classes, theme } = useStyles();
 
     return (
-        <Card withBorder p="xl" radius="md" className={classes.card}>
+        <Card withBorder p="xl" radius="md">
             <Box className={classes.inner}>
                 <Box className={classes.labels}>
                     <Text size="xl" className={classes.label} weight="bolder">

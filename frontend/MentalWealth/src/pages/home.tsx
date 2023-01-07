@@ -65,7 +65,7 @@ function JournalEntries() {
             
             >
                 {data.data.sort((a, b) => Number.parseInt(b.updatedAt) - Number.parseInt(a.updatedAt)).slice(0,10).map((entry) => 
-                    <Card shadow="sm" p="lg" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
+                    <Card p="xl" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
                         <Text fz="xl" truncate>{entry.title}</Text>
 
                         Last edited
