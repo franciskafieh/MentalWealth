@@ -2,7 +2,7 @@ import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantine
 import { fetcher } from "../utils/fetcher";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
-import { IconTextPlus } from "@tabler/icons";
+import { IconDots, IconTextPlus } from "@tabler/icons";
 import { hexToRgb } from "../utils/colors";
 
 function getHalfOpacityFromHex(hex: string) {
@@ -23,7 +23,7 @@ const useStyles = createStyles((theme) => ({
 const Home = (): JSX.Element => {
     return (
         <>
-            <Title mt="lg">Great to see you, {useApiStore((state) => state.user).userName}!</Title>
+            <Title mt="lg" style={{paddingTop: "0"}}>Great to see you, {useApiStore((state) => state.user).userName}!</Title>
             <Text mt="xs">Your Mood Over the Last X Days</Text>
             <Text mt="xs">Your Journal Entries</Text>
             <JournalEntries></JournalEntries>
@@ -70,13 +70,6 @@ function JournalEntries() {
             
             >
                 {/* TODO: HREF */}
-                <Card shadow="lg" p="lg" radius="md" withBorder component="a"
-                href="" className={classes.createJournalCard}> 
-                    <Center>
-                        <IconTextPlus size={48}></IconTextPlus>
-                        <Text>New</Text>
-                    </Center>
-                </Card>
                 {data.data.slice(0,10).map((entry: Entries) => 
                     <Card shadow="lg" p="lg" radius="md" withBorder component="a" href="">
                         <Text fz="xl" truncate>{entry.title}</Text>
@@ -85,9 +78,15 @@ function JournalEntries() {
                         {" " + new Date(Date.parse(entry.updatedAt)).toLocaleString("en-US", {dateStyle: "long", timeStyle: "short"})}
                     </Card>
                 )}
+                <Card shadow="lg" p="lg" radius="md" withBorder component="a"
+                href="/journal" className={classes.createJournalCard}> 
+                    <Center>
+                        <Text fw={700} fz="lg">See All</Text>
+                        <Space w="xs" />
+                        <IconDots size={48}></IconDots>
+                    </Center>
+                </Card>
             </SimpleGrid>
-            <Space h="sm" />
-            <Anchor c={theme.fn.primaryColor()} fw={700} fz="lg" href="/journal">See all →</Anchor>
             </div>
         )
     }
