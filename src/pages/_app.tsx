@@ -19,7 +19,6 @@ const WrappedApp = (props: AppProps & { colorScheme: ColorScheme, session: Sessi
     const toggleColorScheme = (value?: ColorScheme) => {
         const nextColorScheme = value || (pageProps.colorSheme === "dark" ? "light" : "dark");
         setCScheme(nextColorScheme);
-        // when color scheme is updated save it to cookie
         setCookie("mantine-color-scheme", nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
     };
 
