@@ -24,6 +24,9 @@ const useStyles = createStyles((theme) => ({
             fontSize: "4vw"
         },
     },
+    featuresContainer: {
+        minHeight: "100vh",
+    },
 }));
 
 const Home = (): JSX.Element => {
@@ -51,9 +54,9 @@ const Home = (): JSX.Element => {
                 </Text>
                 <ScrollAction callback={scrollToFirstSection} />
             </Center>
-            <Box ref={firstSectionRef as any}>
+            <Center className={classes.featuresContainer} ref={firstSectionRef as any}>
                 <FeaturesSection title="Something for everyone" description="Whether it's getting or giving help, we've got you covered." />
-            </Box>
+            </Center>
         </>
     );
 };

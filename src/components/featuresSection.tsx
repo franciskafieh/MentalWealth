@@ -54,7 +54,7 @@ export function Feature({ icon: Icon, title, description }: FeatureProps) {
     const theme = useMantineTheme();
     return (
         <Paper sx={{ backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[0] }} radius="md" p="md">
-            <ThemeIcon variant="light" size={40} radius={40}>
+            <ThemeIcon variant="light" color="orange.7" size={40} radius={40}>
                 <Icon size={20} stroke={1.5} />
             </ThemeIcon>
             <Text style={{ marginTop: theme.spacing.sm, marginBottom: 7 }}>{title}</Text>
@@ -107,9 +107,9 @@ export const FeaturesSection = ({ title, description, data = homeData }: Feature
             </Container>
 
             <SimpleGrid
-                mt={60}
+                mt="xl"
                 cols={3}
-                spacing={theme.spacing.xl * 2}
+                spacing={theme.spacing.xl}
                 breakpoints={[
                     { maxWidth: 980, cols: 2, spacing: "xl" },
                     { maxWidth: 755, cols: 1, spacing: "xl" },
