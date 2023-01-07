@@ -1,5 +1,9 @@
 module.exports = {
     root: true,
+    env: {
+        node: true,
+        commonjs: true,
+    },
     parser: "@typescript-eslint/parser",
     plugins: ["@typescript-eslint", "react"],
     extends: [
