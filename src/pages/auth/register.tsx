@@ -47,6 +47,7 @@ const Register = (): JSX.Element => {
             <Text align="center" mt="md">
                 Already have an account? <Anchor component={Link} href="/auth/signin">Sign in</Anchor>
             </Text>
+            <Anchor component={Link} href="/" align="center">Go back to home screen</Anchor>
         </form>
     </Center>);
 };

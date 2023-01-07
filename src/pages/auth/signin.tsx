@@ -91,6 +91,7 @@ const Signin = (): JSX.Element => {
                 <Text align="center" mt="md">
                     Don&apos;t have an account? <Anchor component={Link} href="/auth/register">Register</Anchor>
                 </Text>
+                <Anchor component={Link} href="/" align="center">Go back to home screen</Anchor>
             </form>
         </Center>
     );
