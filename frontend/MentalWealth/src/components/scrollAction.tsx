@@ -32,7 +32,7 @@ export const ScrollAction = ({ callback }: { callback(): void }): JSX.Element =>
                 height="52"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
-                stroke={theme.white}
+                stroke={theme.primaryColor}
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"

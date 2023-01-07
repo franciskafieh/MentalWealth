@@ -27,7 +27,10 @@ const App = () => {
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
             <QueryClientProvider client={queryClient}>
                 <MantineProvider
-                    theme={{ colorScheme, primaryColor: "orange" }}
+                    theme={{ 
+                        colorScheme,
+                        primaryColor: "orange",
+                    }}
                     withGlobalStyles={true}
                     withNormalizeCSS={true}
                 >
