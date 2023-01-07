@@ -15,7 +15,7 @@ const WrappedApp = (props: AppProps & { colorScheme: ColorScheme, session: Sessi
     const [cScheme, setCScheme] = useState<ColorScheme>(pageProps.colorScheme);
 
     const toggleColorScheme = (value?: ColorScheme) => {
-        const nextColorScheme = value || (pageProps.colorSheme === "dark" ? "light" : "dark");
+        const nextColorScheme = value || (cScheme === "dark" ? "light" : "dark");
         setCScheme(nextColorScheme);
         setCookie("mantine-color-scheme", nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
     };
@@ -44,9 +44,12 @@ const WrappedApp = (props: AppProps & { colorScheme: ColorScheme, session: Sessi
 WrappedApp.getInitialProps = async (ctx) => {
     const appProps = await App.getInitialProps(ctx);
 
+    const colorScheme = ctx.ctx.req?.cookies["mantine-color-scheme"] || "light";
+    const session = await getSession(ctx);
+
     appProps.pageProps = {
-        colorScheme: ctx.ctx.req.cookies["mantine-color-scheme"] || "light",
-        session: await getSession(ctx),
+        colorScheme,
+        session
     };
 
     return appProps;

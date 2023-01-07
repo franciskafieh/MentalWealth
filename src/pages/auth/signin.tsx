@@ -1,7 +1,8 @@
-import { Box, Button, Center, PasswordInput, TextInput, Title, createStyles } from "@mantine/core";
+import { Anchor, Box, Button, Center, PasswordInput, Text, TextInput, Title, createStyles } from "@mantine/core";
 import { getCsrfToken, signIn } from "next-auth/react";
 import { useForm, zodResolver } from "@mantine/form";
 
+import Link from "next/link";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { z } from "zod";
@@ -86,6 +87,10 @@ const Signin = (): JSX.Element => {
                 <PasswordInput {...form.getInputProps("password")} required={true} label="Password" mb="md" error={getErrors().password} />
 
                 <Button type="submit">Sign in</Button>
+
+                <Text align="center" mt="md">
+                    Don&apos;t have an account? <Anchor component={Link} href="/auth/register">Register</Anchor>
+                </Text>
             </form>
         </Center>
     );

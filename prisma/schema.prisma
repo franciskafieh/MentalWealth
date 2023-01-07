@@ -49,8 +49,8 @@ model Session {
 
 model User {
     id             String         @id @default(cuid())
-    name           String?
-    email          String?        @unique
+    name           String
+    email          String         @unique
     emailVerified  DateTime?
     password       String
     accounts       Account[]
@@ -68,21 +68,21 @@ model VerificationToken {
 }
 
 model JournalEntry {
-    id            Int      @id @default(autoincrement())
-    title         String?
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
-    content       String
-    mood          Int      @default(0)
-    author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    authorId      String
-    accessTokens  JournalAccessToken[]
+    id           Int                  @id @default(autoincrement())
+    title        String?
+    createdAt    DateTime             @default(now())
+    updatedAt    DateTime             @updatedAt
+    content      String
+    mood         Int                  @default(0)
+    author       User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    authorId     String
+    accessTokens JournalAccessToken[]
 }
 
 model JournalAccessToken {
     token     String       @id @default(cuid())
     createdAt DateTime     @default(now())
-    expiresAt DateTime     
+    expiresAt DateTime
     journal   JournalEntry @relation(fields: [journalId], references: [id], onDelete: Cascade)
     journalId Int
 }
