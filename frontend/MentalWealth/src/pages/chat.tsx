@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import dayjs, { ManipulateType } from "dayjs";
-import { openContextModal, openModal } from "@mantine/modals";
+import { closeModal, openModal } from "@mantine/modals";
 import { useEffect, useState } from "react";
 
 import { IconInfoCircle } from "@tabler/icons";
@@ -27,6 +27,7 @@ import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import utc from "dayjs/plugin/utc";
+import { useStore } from "zustand";
 
 dayjs.extend(utc);
 
@@ -56,8 +57,6 @@ const ShareEntryModalContent = ({ connection }: { connection: HubConnection }): 
         },
     });
 
-    const [shareLink, setShareLink] = useState<string>("");
-
     const form = useForm({
         initialValues: {
             entryId: "",
@@ -79,15 +78,6 @@ const ShareEntryModalContent = ({ connection }: { connection: HubConnection }): 
         },
     });
 
-
-    // useEffect(() => {
-    //     setShareLink("");
-
-    //     connection.on("ShareTokenGenerated", (token: string) => {
-    //         setShareLink(`${window.location.origin}/journal/${form.values.entryId}?token=${token}`);
-    //     });
-    // }, [form]);
-
     if (entires.isLoading) {
         return <Loader />;
     }
@@ -96,9 +86,13 @@ const ShareEntryModalContent = ({ connection }: { connection: HubConnection }): 
         label: e.title,
         value: e.id.toString(),
     }));
-
+    
+    
     const submit = form.onSubmit(async (values) => {
         connection.invoke("ShareJournalEntry", +values.entryId, dayjs().add(values.expiryAmount, values.expiryUnit as ManipulateType).utc().format())
+        const customEvent = new CustomEvent('submittedForm', { detail: { values: values } });
+        
+        window.dispatchEvent(customEvent);
     });
 
     return (
@@ -121,17 +115,9 @@ const ShareEntryModalContent = ({ connection }: { connection: HubConnection }): 
                     ]}
                 />
             </Group>
-            <Group mt="sm" align="flex-end">
-            <Button type="submit">
+            <Button type="submit" mt="sm">
                 Share
             </Button>
-            <TextInput
-            sx={{ flexGrow: 1 }}
-                label="Share link"
-                disabled
-                readOnly
-                />
-            </Group>
         </form>
     );
 };
@@ -246,10 +232,26 @@ const Chat = (): JSX.Element => {
     ));
 
     const openShareEntryModal = () => {
+
+
         openModal({
             title: "Share journal entry",
             children: <ShareEntryModalContent connection={connection} />,
         });
+
+        let entryId: number;
+
+
+        connection.on("ShareTokenGenerated", async (token: string) => {
+            closeModal("Share journal entry");
+            console.log("entry id is " + entryId + ". token is " + token);
+            
+            const shareLink = `${window.location.origin}/journal/${entryId}?token=${token}`;
+            
+            setMessage(shareLink);
+        });
+
+        window.addEventListener('submittedForm', (e: CustomEvent) => entryId = e.detail.values.entryId);
     };
 
     if (joined) {
