@@ -54,6 +54,9 @@ public class ShareController : Controller
             ExpiryDate = request.ExpiryDate,
             RecipientId = request.RecipientId
         };
+        
+        await _dbContext.ShareTokens.AddAsync(shareToken);
+        await _dbContext.SaveChangesAsync();
 
         return Ok(token);
     }

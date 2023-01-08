@@ -4,25 +4,31 @@ import {
     Group,
     Input,
     Loader,
+    NumberInput,
     Paper,
+    Select,
     Switch,
     Text,
+    TextInput,
     Title,
     createStyles,
 } from "@mantine/core";
-import {
-    HubConnection,
-    HubConnectionBuilder,
-    LogLevel,
-} from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import dayjs, { ManipulateType } from "dayjs";
+import { openContextModal, openModal } from "@mantine/modals";
 import { useEffect, useState } from "react";
 
 import { IconInfoCircle } from "@tabler/icons";
-import dayjs from "dayjs";
+import { fetcher } from "../utils/fetcher";
 import { showNotification } from "@mantine/notifications";
 import { useApiStore } from "../store/apiStore";
 import { useAuthToken } from "../hooks/useAuthToken";
+import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const useStyles = createStyles((theme) => ({
     container: {
@@ -41,6 +47,95 @@ interface Message {
     own: boolean;
 }
 
+const ShareEntryModalContent = ({ connection }: { connection: HubConnection }): JSX.Element => {
+    const entires = useQuery({
+        queryKey: ["JournalEntries"],
+        queryFn: () => {
+            const journalEntries = fetcher.path("/Journals").method("get").create();
+            return journalEntries({});
+        },
+    });
+
+    const [shareLink, setShareLink] = useState<string>("");
+
+    const form = useForm({
+        initialValues: {
+            entryId: "",
+            expiryAmount: 1,
+            expiryUnit: "day",
+        },
+        validate: {
+            entryId: (value) => {
+                if (entires.data.data.map((e) => e.id).indexOf(+value) === -1)
+                    return "You must select a valid entry";
+            },
+            expiryAmount: (value) => {
+                if (value < 0) return "Expiry amount must be greater than 0";
+            },
+            expiryUnit: (value) => {
+                if (["day", "week", "month", "year"].indexOf(value) === -1)
+                    return "Expiry unit must be a valid unit";
+            },
+        },
+    });
+
+
+    // useEffect(() => {
+    //     setShareLink("");
+
+    //     connection.on("ShareTokenGenerated", (token: string) => {
+    //         setShareLink(`${window.location.origin}/journal/${form.values.entryId}?token=${token}`);
+    //     });
+    // }, [form]);
+
+    if (entires.isLoading) {
+        return <Loader />;
+    }
+
+    const entriesData = entires.data.data.map((e) => ({
+        label: e.title,
+        value: e.id.toString(),
+    }));
+
+    const submit = form.onSubmit(async (values) => {
+        connection.invoke("ShareJournalEntry", +values.entryId, dayjs().add(values.expiryAmount, values.expiryUnit as ManipulateType).utc().format())
+    });
+
+    return (
+        <form onSubmit={submit}>
+            <Select label="Entry" {...form.getInputProps("entryId")} data={entriesData} />
+            <Group position="apart" mt="sm">
+                <NumberInput
+                    label="Expiry amount"
+                    sx={{ width: 100 }}
+                    {...form.getInputProps("expiryAmount")}
+                />
+                <Select
+                    label="Expiry unit"
+                    {...form.getInputProps("expiryUnit")}
+                    data={[
+                        { label: "Days", value: "day" },
+                        { label: "Weeks", value: "week" },
+                        { label: "Months", value: "month" },
+                        { label: "Years", value: "year" },
+                    ]}
+                />
+            </Group>
+            <Group mt="sm" align="flex-end">
+            <Button type="submit">
+                Share
+            </Button>
+            <TextInput
+            sx={{ flexGrow: 1 }}
+                label="Share link"
+                disabled
+                readOnly
+                />
+            </Group>
+        </form>
+    );
+};
+
 const Chat = (): JSX.Element => {
     const { classes } = useStyles();
     const accessToken = useAuthToken();
@@ -56,9 +151,9 @@ const Chat = (): JSX.Element => {
 
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
-        .withUrl("/api/Hubs/Chat", { accessTokenFactory: () => accessToken })
-        .configureLogging(LogLevel.Information)
-        .build();
+            .withUrl("/api/Hubs/Chat", { accessTokenFactory: () => accessToken })
+            .configureLogging(LogLevel.Information)
+            .build();
 
         (async () => {
             hubConnection.on("Joined", () => {
@@ -98,8 +193,6 @@ const Chat = (): JSX.Element => {
                 console.log("Connected");
                 await connection?.invoke("Join");
                 setConnection(hubConnection);
-
-
             } catch (err) {
                 console.error(err);
             }
@@ -152,17 +245,31 @@ const Chat = (): JSX.Element => {
         </Paper>
     ));
 
+    const openShareEntryModal = () => {
+        openModal({
+            title: "Share journal entry",
+            children: <ShareEntryModalContent connection={connection} />,
+        });
+    };
+
     if (joined) {
         return (
             <>
-                <Group position="apart">
-                    <Title order={1}>Chatting anonymously</Title>
-                    <Button
-                        variant="outline"
-                        onClick={async () => await connection?.invoke("Leave")}
-                    >
-                        Leave
-                    </Button>
+                <Group position="apart" mb="lg">
+                    <Title order={1} sx={{ lineHeight: 0.8 }}>
+                        Chatting anonymously
+                    </Title>
+                    <Group>
+                        <Button variant="outline" onClick={() => openShareEntryModal()}>
+                            Share journal entry
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={async () => await connection?.invoke("Leave")}
+                        >
+                            Leave
+                        </Button>
+                    </Group>
                 </Group>
                 {renderedMessages}
                 <Group>
