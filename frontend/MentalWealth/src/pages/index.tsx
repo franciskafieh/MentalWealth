@@ -60,7 +60,7 @@ const Index = (): JSX.Element => {
                     MentalWealth
                 </Title>
                 <Text align="center" className={classes.landingDescription} color="dimmed" mt="xs">
-                    A mental health app for the modern world.
+                    The best of the virtual and digital worlds.
                 </Text>
                 <ScrollAction callback={scrollToFirstSection} />
                 <Box className={classes.navigationContainer}>

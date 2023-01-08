@@ -1,7 +1,7 @@
 > Note: this project was originally generated using the t3-turbo template, but then was moved to a new stack (.NET Core & Vite)
 
 # MentalWealth
-## A mental health app for the modern world.
+A mental health app that brings you the best of the virtual and digital worlds.
 
 # Installation
 in backend/MentalWealth:
