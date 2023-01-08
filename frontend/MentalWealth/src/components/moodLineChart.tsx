@@ -86,5 +86,10 @@ export const MoodChart = () => {
 
 
     options.scales.x.grid.color = xGridColors;
-    return <Line options={options} data={data} height={50} />;
+
+    
+
+    return <Line options={options} data={data} height={100} redraw />;
+
+    
 }

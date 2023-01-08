@@ -1,4 +1,4 @@
-import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, useMantineTheme, Space, Anchor, Group, Box } from "@mantine/core";
+import { Text, Title, createStyles, Loader, Card, SimpleGrid, Center, Group, Space, Anchor, useMantineTheme, Button } from "@mantine/core";
 import { fetcher } from "../utils/fetcher";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
@@ -25,12 +25,13 @@ const useStyles = createStyles((theme) => ({
 const Home = (): JSX.Element => {
     return (
         <>
-            <Title order={1} mb="sm">Good to see you, {useApiStore((state) => state.user).userName}.</Title>
-            <Text mt="xs">Your Mood Over the Last X Days</Text>
+            <Title order={1} mb="xl">Good to see you, {useApiStore((state) => state.user).userName}.</Title>
+            <Title order={2} mb="xl" fw={300}>Your Mood Over the Last Week</Title>
             <MoodChart></MoodChart>
-            <Text mt="xs">Your Journal Entries</Text>
+            <Title order={2} mt="xl" mb="xl" fw={300}>Your Recent Journal Entries</Title>
             <JournalEntries></JournalEntries>
-            <Text mt="xs">Start an Anonymous Chat</Text>
+            <Title order={2} mt="xl" mb="xl" fw={300}>Chat History</Title>
+            <Center><Button></Button></Center>
             
         </>
 
@@ -39,7 +40,7 @@ const Home = (): JSX.Element => {
 };
 
 function JournalEntries() {
-    const { classes } = useStyles();
+    const theme = useMantineTheme();
 
     const { status, data } = useQuery({
         queryKey: ["JournalEntries"],
@@ -56,7 +57,7 @@ function JournalEntries() {
     if (status === "success") {
         return (
             <div>
-            <SimpleGrid spacing="xs" verticalSpacing="xs"
+            <SimpleGrid spacing="xs" verticalSpacing="xs" mb="lg"
                   breakpoints={[
                         { minWidth: 'sm', cols: 2 },
                         { minWidth: 'md', cols: 3 },
@@ -64,7 +65,7 @@ function JournalEntries() {
                     ]}
             
             >
-                {data.data.sort((a, b) => Number.parseInt(b.updatedAt) - Number.parseInt(a.updatedAt)).slice(0,10).map((entry) => 
+                {data.data.sort((a, b) => Number.parseInt(b.updatedAt) - Number.parseInt(a.updatedAt)).slice(0,12).map((entry) => 
                     <Card p="xl" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
                         <Text fz="xl" truncate>{entry.title}</Text>
 
@@ -72,7 +73,7 @@ function JournalEntries() {
                         {" " + dayjs(entry.updatedAt).format("MMM D, YYYY [at] h:mm A")}
                     </Card>
                 )}
-                <Card shadow="sm" p="lg" radius="md" withBorder component="a"
+                {/* <Card shadow="sm" p="lg" radius="md" withBorder component="a"
                 href="/journal" className={classes.createJournalCard}> 
                     <Center>
                         <Group spacing="xs">
@@ -80,8 +81,9 @@ function JournalEntries() {
                             <IconDots size={48}></IconDots>
                         </Group>
                     </Center>
-                </Card>
+                </Card> */}
             </SimpleGrid>
+            <Anchor c={theme.fn.primaryColor()} fw={700} fz="xl" href="/journal">See all →</Anchor>
             </div>
         )
     }
