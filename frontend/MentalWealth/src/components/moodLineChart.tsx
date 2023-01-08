@@ -9,7 +9,10 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import dayjs from 'dayjs';
 import { Line } from 'react-chartjs-2';
+import { fetcher } from '../utils/fetcher';
+import { useQuery } from '@tanstack/react-query';
 
 ChartJS.register(
   CategoryScale,
@@ -50,11 +53,33 @@ export const options = {
     },
 };
 
-const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Yesterday', 'Today'];
+const labels = [
+                dayjs().subtract(6, "days").format("dddd"), 
+                dayjs().subtract(5, "days").format("dddd"),
+                dayjs().subtract(4, "days").format("dddd"),
+                dayjs().subtract(3, "days").format("dddd"),
+                dayjs().subtract(2, "days").format("dddd"),
+                'Yesterday',
+                'Today'
+            ];
+
+
+const { data } = useQuery({
+        queryKey: ["JournalEntries"],
+        queryFn: () => {
+            const journalEntries = fetcher.path("/Journals").method("get").create();
+            return journalEntries({});
+        }
+    });
+
+if (data) {
+    data.data.sort((a, b) => Number.parseInt(b.createdAt) - Number.parseInt(a.createdAt)
+    data.data[0].id
+}
 
 
 
-export const data = {
+export const chartData = {
   labels,
   datasets: [
     {
@@ -72,8 +97,8 @@ export const data = {
 
 export const MoodChart = () => {
     const theme = useMantineTheme();
-    data.datasets[0].borderColor = theme.fn.primaryColor();
-    data.datasets[0].backgroundColor = theme.fn.primaryColor();
+    chartData.datasets[0].borderColor = theme.fn.primaryColor();
+    chartData.datasets[0].backgroundColor = theme.fn.primaryColor();
     options.scales.y.grid.color = theme.colorScheme === "dark" ? theme.colors.gray[9] : theme.colors.gray[3];
 
     let xGridColors = [];
@@ -89,7 +114,7 @@ export const MoodChart = () => {
 
     
 
-    return <Line options={options} data={data} height={100} redraw />;
+    return <Line options={options} data={chartData} height={100} redraw />;
 
     
 }
