@@ -9,6 +9,8 @@ import {
     Text,
     Title,
     createStyles,
+    useMantineTheme,
+    Anchor
 } from "@mantine/core";
 
 import { FullScreenLoading } from "../components/fullScreenLoading";
@@ -18,6 +20,7 @@ import dayjs from "dayjs";
 import { fetcher } from "../utils/fetcher";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
+import { IconBusinessplan } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => ({
     errorContainer: {
@@ -32,6 +35,8 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const Home = (): JSX.Element => {
+    const theme = useMantineTheme();
+
     return (
         <>
             <Title order={1} mb="xl">
@@ -60,16 +65,45 @@ const Home = (): JSX.Element => {
                     </Group>
                     <JournalEntries />
                 </Box>
+                <Box>
+                    <BalanceInfo></BalanceInfo>
+                    <Text fz="xl">Earn more by <Anchor c={theme.colors[theme.primaryColor][5]} href="/journal">writing in your journal</Anchor> or <Anchor c={theme.colors[theme.primaryColor][5]} href="/chat">starting an anonymous chat</Anchor>.</Text>
+                </Box>
             </SimpleGrid>
-            <Title order={2} mt="xl" mb="xl" fw={300}>
-                Chat History
-            </Title>
-            <Center>
-                <Button></Button>
-            </Center>
         </>
     );
 };
+
+
+const BalanceInfo = () => {
+    const theme = useMantineTheme();
+
+    const balance = useQuery({
+        queryKey: ["Balance"],
+        queryFn: () => {
+            const balance = fetcher.path("/Money").method("get").create();
+            return balance({});
+        }
+    });
+
+    if (balance.isLoading) {
+        return <FullScreenLoading />
+    }
+
+    return <>
+        <Group position="apart">
+            <Title order={2} mt="xl" mb="xl" fw={300}>
+                Your Current Balance
+            </Title>
+            <Group c={theme.colors[theme.primaryColor][6]}>
+                <Title order={2} fw={300} mr={-5}>{balance.isError ? 0 : balance.data.data.balance}</Title>
+                <IconBusinessplan size={30} strokeWidth={1}></IconBusinessplan>
+            </Group>
+        </Group>
+        
+    </>;
+}
+
 
 const JournalEntries = () => {
     const { classes } = useStyles();

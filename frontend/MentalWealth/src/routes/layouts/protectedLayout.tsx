@@ -130,7 +130,7 @@ export const ProtectedLayout = (): JSX.Element => {
                         <Group spacing={5} className={classes.links}>
                             {items}
                         </Group>
-                        <Group>
+                        <Group c={theme.colors[theme.primaryColor][6]}>
                             {balance.data && (
                                 <>
                                     <IconBusinessplan size={18} stroke={1.5} />
