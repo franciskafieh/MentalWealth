@@ -4,6 +4,7 @@ using AutoMapper;
 using MentalWealth.Data;
 using MentalWealth.Data.Entities;
 using MentalWealth.Data.Models.Requests;
+using MentalWealth.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,12 +17,12 @@ namespace MentalWealth.Controllers;
 public class ShareController : Controller
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly IMapper _mapper;
+    private readonly IShareService _shareService;
 
-    public ShareController(ApplicationDbContext dbContext, IMapper mapper)
+    public ShareController(ApplicationDbContext dbContext, IShareService shareService)
     {
         _dbContext = dbContext;
-        _mapper = mapper;
+        _shareService = shareService;
     }
 
     [HttpPost]
@@ -44,19 +45,8 @@ public class ShareController : Controller
             ModelState.AddModelError(nameof(request.RecipientId), "Invalid recipient");
             return ValidationProblem();
         }
-
-        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-
-        var shareToken = new ShareToken
-        {
-            Token = token,
-            JournalEntryId = request.JournalEntryId,
-            ExpiryDate = request.ExpiryDate,
-            RecipientId = request.RecipientId
-        };
         
-        await _dbContext.ShareTokens.AddAsync(shareToken);
-        await _dbContext.SaveChangesAsync();
+        var token = await _shareService.CreateShareToken(request.RecipientId, request.ExpiryDate, request.JournalEntryId);
 
         return Ok(token);
     }

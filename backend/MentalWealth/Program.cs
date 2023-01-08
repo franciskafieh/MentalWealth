@@ -48,6 +48,7 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<HtmlSanitizer>();
 builder.Services.AddSingleton<IChatService, ChatService>();
 builder.Services.AddScoped<IMoneyService, MoneyService>();
+builder.Services.AddScoped<IShareService, ShareService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMemoryCache();

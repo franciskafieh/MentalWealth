@@ -14,12 +14,14 @@ public class ChatHub : Hub
     private readonly IChatService _chatService;
     private readonly ApplicationDbContext _dbContext;
     private readonly IMoneyService _moneyService;
+    private readonly IShareService _shareService;
 
-    public ChatHub(IChatService chatService, ApplicationDbContext dbContext, IMoneyService moneyService)
+    public ChatHub(IChatService chatService, ApplicationDbContext dbContext, IMoneyService moneyService, IShareService shareService)
     {
         _chatService = chatService;
         _dbContext = dbContext;
         _moneyService = moneyService;
+        _shareService = shareService;
     }
 
     public async Task Join(bool helper)
@@ -67,18 +69,7 @@ public class ChatHub : Hub
         if (recipient == null)
             return;
 
-        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-
-        var shareToken = new ShareToken
-        {
-            Token = token,
-            JournalEntryId = entryId,
-            ExpiryDate = expirationDate,
-            RecipientId = recipient.Id
-        };
-        
-        await _dbContext.ShareTokens.AddAsync(shareToken);
-        await _dbContext.SaveChangesAsync();
+        var token = await _shareService.CreateShareToken(recipient.Id, expirationDate, entryId);
 
         await Clients.Caller.SendAsync("ShareTokenGenerated", token);
     }
