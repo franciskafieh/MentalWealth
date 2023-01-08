@@ -5,6 +5,7 @@ using MentalWealth.Data;
 using MentalWealth.Data.Entities;
 using MentalWealth.Data.Models.Requests;
 using MentalWealth.Data.Models.Responses;
+using MentalWealth.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,14 @@ public class JournalsController : Controller
     private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly HtmlSanitizer _htmlSanitizer;
+    private readonly IMoneyService _moneyService;
 
-    public JournalsController(ApplicationDbContext dbContext, IMapper mapper, HtmlSanitizer htmlSanitizer)
+    public JournalsController(ApplicationDbContext dbContext, IMapper mapper, HtmlSanitizer htmlSanitizer, IMoneyService moneyService)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _htmlSanitizer = htmlSanitizer;
+        _moneyService = moneyService;
     }
 
     [HttpGet]
@@ -74,6 +77,8 @@ public class JournalsController : Controller
 
         _dbContext.JournalEntries.Add(journal);
         await _dbContext.SaveChangesAsync();
+        
+        await _moneyService.AddMoney(userId, 1);
 
         return CreatedAtAction(nameof(View), new { id = journal.Id }, _mapper.Map<JournalViewResponse>(journal));
     }

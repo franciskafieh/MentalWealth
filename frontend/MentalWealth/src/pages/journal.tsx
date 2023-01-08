@@ -79,6 +79,7 @@ const CreateEntryModalContent = (): JSX.Element => {
         try {
             await createEntry.mutateAsync({ ...values, content: editor.getHTML() });
             queryClient.invalidateQueries({ queryKey: ["JournalEntries"] });
+            queryClient.invalidateQueries({ queryKey: ["Balance"] });
             closeAllModals();
         } catch (err) {
             console.log(err);

@@ -1,5 +1,6 @@
 using MentalWealth.Data;
 using MentalWealth.Data.Entities;
+using MentalWealth.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 

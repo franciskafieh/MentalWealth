@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using MentalWealth.Data;
 using MentalWealth.Data.Entities;
 using MentalWealth.Realtime.Services;
+using MentalWealth.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -12,11 +13,13 @@ public class ChatHub : Hub
 {
     private readonly IChatService _chatService;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IMoneyService _moneyService;
 
-    public ChatHub(IChatService chatService, ApplicationDbContext dbContext)
+    public ChatHub(IChatService chatService, ApplicationDbContext dbContext, IMoneyService moneyService)
     {
         _chatService = chatService;
         _dbContext = dbContext;
+        _moneyService = moneyService;
     }
 
     public async Task Join(bool helper)
@@ -26,6 +29,8 @@ public class ChatHub : Hub
         {
             await Clients.Caller.SendAsync("Joined");
             await Clients.User(connectedUser).SendAsync("Joined");
+            await _moneyService.AddMoney(connectedUser, 1);
+            await _moneyService.AddMoney(Context.UserIdentifier, 1);
             return;
         }
         await Clients.Caller.SendAsync("Waiting");

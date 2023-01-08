@@ -1,4 +1,5 @@
 import {
+    Affix,
     Button,
     Center,
     Group,
@@ -12,12 +13,12 @@ import {
     TextInput,
     Title,
     createStyles,
-    Affix,
 } from "@mantine/core";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import dayjs, { ManipulateType } from "dayjs";
 import { closeModal, openModal } from "@mantine/modals";
+import dayjs, { ManipulateType } from "dayjs";
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { IconInfoCircle } from "@tabler/icons";
 import { fetcher } from "../utils/fetcher";
@@ -26,9 +27,8 @@ import { useApiStore } from "../store/apiStore";
 import { useAuthToken } from "../hooks/useAuthToken";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import utc from "dayjs/plugin/utc";
 import { useStore } from "zustand";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 
@@ -87,12 +87,12 @@ const ShareEntryModalContent = ({ connection }: { connection: HubConnection }): 
         label: e.title,
         value: e.id.toString(),
     }));
-    
-    
+
+
     const submit = form.onSubmit(async (values) => {
         connection.invoke("ShareJournalEntry", +values.entryId, dayjs().add(values.expiryAmount, values.expiryUnit as ManipulateType).utc().format())
         const customEvent = new CustomEvent('submittedForm', { detail: { values: values } });
-        
+
         window.dispatchEvent(customEvent);
     });
 
@@ -127,6 +127,8 @@ const Chat = (): JSX.Element => {
     const { classes } = useStyles();
     const accessToken = useAuthToken();
 
+    const queryClient = useQueryClient();
+
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const [joined, setJoined] = useState<boolean>(false);
     const [waiting, setWaiting] = useState<boolean>(false);
@@ -145,6 +147,7 @@ const Chat = (): JSX.Element => {
         (async () => {
             hubConnection.on("Joined", () => {
                 console.log("Joined");
+                queryClient.invalidateQueries({ queryKey: ["Balance"] });
                 setJoined(true);
                 setWaiting(false);
                 setMessage("");
@@ -244,9 +247,9 @@ const Chat = (): JSX.Element => {
         connection.on("ShareTokenGenerated", async (token: string) => {
             closeModal("Share journal entry");
             console.log("entry id is " + entryId + ". token is " + token);
-            
+
             const shareLink = `${window.location.origin}/journal/${entryId}?token=${token}`;
-            
+
             setMessage(shareLink);
         });
 

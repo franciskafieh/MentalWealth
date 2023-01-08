@@ -327,6 +327,23 @@
                 }
             }
         },
+        "/Money": {
+            "get": {
+                "tags": ["Money"],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MoneyViewResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/Share": {
             "post": {
                 "tags": ["Share"],
@@ -541,6 +558,16 @@
                     "userName": {
                         "type": "string",
                         "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "MoneyViewResponse": {
+                "type": "object",
+                "properties": {
+                    "balance": {
+                        "type": "integer",
+                        "format": "int32"
                     }
                 },
                 "additionalProperties": false

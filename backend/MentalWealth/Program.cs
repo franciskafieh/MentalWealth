@@ -3,6 +3,7 @@ using MentalWealth.Auth;
 using MentalWealth.Data;
 using MentalWealth.Realtime;
 using MentalWealth.Realtime.Services;
+using MentalWealth.Services;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.OpenApi.Models;
 
@@ -46,6 +47,7 @@ builder.Services.AddPersistence(builder.Configuration.GetConnectionString("Defau
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<HtmlSanitizer>();
 builder.Services.AddSingleton<IChatService, ChatService>();
+builder.Services.AddScoped<IMoneyService, MoneyService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMemoryCache();

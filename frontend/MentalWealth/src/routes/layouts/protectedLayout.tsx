@@ -15,14 +15,14 @@ import {
     useMantineColorScheme,
     useMantineTheme,
 } from "@mantine/core";
-import { IconLogout, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
+import { IconBusinessplan, IconLogout, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
 import { Link, Outlet } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { apiStateHandler } from "../../utils/apiStateHandler";
 import { fetcher } from "../../utils/fetcher";
 import { useApiStore } from "../../store/apiStore";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation } from "@tanstack/react-query";
 
 const links = [
     {
@@ -85,6 +85,14 @@ export const ProtectedLayout = (): JSX.Element => {
 
     const user = useApiStore((state) => state.user);
 
+    const balance = useQuery({
+        queryKey: ["Balance"],
+        queryFn: () => {
+            const balance = fetcher.path("/Money").method("get").create();
+            return balance({});
+        }
+    });
+
     const logout = useMutation({
         mutationFn: async () => {
             const logout = fetcher.path("/Auth/Logout").method("delete").create();
@@ -123,6 +131,12 @@ export const ProtectedLayout = (): JSX.Element => {
                             {items}
                         </Group>
                         <Group>
+                            {balance.data && (
+                                <>
+                                    <IconBusinessplan size={18} stroke={1.5} />
+                                    <Text ml={-12}>{balance.data.data.balance}</Text>
+                                </>
+                            )}
                             <Menu>
                                 <Menu.Target>
                                     <ActionIcon

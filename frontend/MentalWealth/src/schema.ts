@@ -185,6 +185,18 @@ export interface paths {
       };
     };
   };
+  "/Money": {
+    get: {
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            "application/json": components["schemas"]["MoneyViewResponse"];
+          };
+        };
+      };
+    };
+  };
   "/Share": {
     post: {
       requestBody?: {
@@ -282,6 +294,10 @@ export interface components {
       id?: string | null;
       email?: string | null;
       userName?: string | null;
+    };
+    MoneyViewResponse: {
+      /** Format: int32 */
+      balance?: number;
     };
     ProblemDetails: {
       type?: string | null;
