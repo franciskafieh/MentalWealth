@@ -42,12 +42,7 @@ function JournalEntries() {
             
             >
                 {data.data.sort((a, b) => Number.parseInt(b.updatedAt) - Number.parseInt(a.updatedAt)).slice(0,12).map((entry) => 
-                    <Card p="xl" radius="md" withBorder component="a" href={"/journal/" + entry.id}>
-                        <Text fz="xl" truncate>{entry.title}</Text>
-
-                        Last edited
-                        {" " + dayjs(entry.updatedAt).format("MMM D, YYYY [at] h:mm A")}
-                    </Card>
+                    <HomeScreenJournalEntry key={entry.id} id={entry.id} title={entry.title} updatedAt={entry.updatedAt}></HomeScreenJournalEntry>
                 )}
                 {/* <Card shadow="sm" p="lg" radius="md" withBorder component="a"
                 href="/journal" className={classes.createJournalCard}> 
@@ -63,4 +58,14 @@ function JournalEntries() {
             </div>
         )
     }
+}
+
+function HomeScreenJournalEntry(props: {id: number, title: string, updatedAt: string}) {
+    return <>
+        <Card p="xl" radius="md" withBorder component="a" href={"/journal/" + props.id}>
+            <Text fz="xl" truncate>{props.title}</Text>
+            Last edited
+            {" " + dayjs(props.updatedAt).format("MMM D, YYYY [at] h:mm A")}
+        </Card>
+    </>;
 }

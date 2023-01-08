@@ -24,47 +24,78 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-    responsive: true,
-    plugins: {
-        legend: {
-            display: false,
-        },
-    },
-    scales: {
-        x: {
-            grid: {
-                color: ["#000000"],
-            }
-        },
-        y: {
-            offset: true,
-            min: 1,
-            max: 5,
-            ticks: {
-                fontColor: "white",
-                stepSize: 1,
-                autoSkip: false,
-            },
-            grid: {
-                color: "#000000",
-            }
+
+export const MoodChart = () => {
+    const theme = useMantineTheme();
+
+    function getXGridColors() {
+        theme.colorScheme === "dark" ? theme.colors.gray[9] : theme.colors.gray[3]
+        let colors = [];
+        for (let i = 0; i < 6; i++) {
+            colors[i] = theme.colorScheme === "dark" ? theme.colors.gray[9] : theme.colors.gray[3];
         }
-    },
-};
+        
+        colors[6] = theme.fn.primaryColor();
 
-const labels = [
-                dayjs().subtract(6, "days").format("dddd"), 
-                dayjs().subtract(5, "days").format("dddd"),
-                dayjs().subtract(4, "days").format("dddd"),
-                dayjs().subtract(3, "days").format("dddd"),
-                dayjs().subtract(2, "days").format("dddd"),
-                'Yesterday',
-                'Today'
-            ];
+        return colors;
+    }
 
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: getXGridColors(),
+                }
+            },
+            y: {
+                offset: true,
+                min: 1,
+                max: 5,
+                ticks: {
+                    fontColor: "white",
+                    stepSize: 1,
+                    autoSkip: false,
+                },
+                grid: {
+                    color: theme.colorScheme === "dark" ? theme.colors.gray[9] : theme.colors.gray[3],
+                }
+            }
+        },
+    };
 
-const { data } = useQuery({
+    const days = (): dayjs.Dayjs[] => {
+        let days = [];
+        for (let i = 0; i < 7; i++) {
+            days[i] = dayjs().subtract(i, "days");
+        }
+        return days.reverse();
+    }
+
+    const labels = days().map(day => day.format("dddd"));
+
+    const chartData = {
+    labels,
+    datasets: [
+        {
+            label: 'Mood',
+            data: [],
+            borderColor: theme.fn.primaryColor(),
+            backgroundColor: theme.fn.primaryColor(),
+            lineTension: 0.25,
+            pointRadius: 4,
+            pointHoverRadius: 8,
+        },
+    ],
+    };
+    
+
+const { data, status } = useQuery({
         queryKey: ["JournalEntries"],
         queryFn: () => {
             const journalEntries = fetcher.path("/Journals").method("get").create();
@@ -72,49 +103,20 @@ const { data } = useQuery({
         }
     });
 
-if (data) {
-    data.data.sort((a, b) => Number.parseInt(b.createdAt) - Number.parseInt(a.createdAt)
-    data.data[0].id
-}
+    if (status === "success") {
+        for (const day of days()) {
+            const dayAverageMood = data.data.filter(d => dayjs(d.createdAt).isSame(day, "day"))
+                                            .map(d => d.moodLevel)
+                                            .filter(m => m != 0);
+
+            if (dayAverageMood.length > 0) {
+                chartData.datasets[0].data.push(Math.ceil(dayAverageMood.reduce((a, b) => a + b) / dayAverageMood.length));
+            } else {
+                chartData.datasets[0].data.push(undefined);
+            }
+        }
+    } 
 
 
-
-export const chartData = {
-  labels,
-  datasets: [
-    {
-        label: 'Mood',
-        data: [1, 5, 3, 2, 5, 3, 4], // calc avg of moods on all days and divide by 5. 0 = no data, so display undefined
-        borderColor: 'rgb(0, 0, 0)',
-        backgroundColor: 'rgb(0, 0, 0)',
-        lineTension: 0.25,
-        pointRadius: 4,
-        pointHoverRadius: 8,
-    },
-  ],
-};
-
-
-export const MoodChart = () => {
-    const theme = useMantineTheme();
-    chartData.datasets[0].borderColor = theme.fn.primaryColor();
-    chartData.datasets[0].backgroundColor = theme.fn.primaryColor();
-    options.scales.y.grid.color = theme.colorScheme === "dark" ? theme.colors.gray[9] : theme.colors.gray[3];
-
-    let xGridColors = [];
-
-    for (let i = 0; i < 6; i++) {
-        xGridColors[i] = theme.colorScheme === "dark" ? theme.colors.gray[9] : theme.colors.gray[3];
-    }
-
-    xGridColors[6] = theme.fn.primaryColor();
-
-
-    options.scales.x.grid.color = xGridColors;
-
-    
-
-    return <Line options={options} data={chartData} height={100} redraw />;
-
-    
+    return <Line options={options} data={chartData} height={100} redraw />;  
 }

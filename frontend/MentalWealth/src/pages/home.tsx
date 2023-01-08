@@ -11,7 +11,6 @@ import { UserHome } from "../components/userHomePage";
 
 function getHalfOpacityFromHex(hex: string) {
     const [r, g, b] = hexToRgb(hex);
-    console.log(hex);
     return `rgba(${r}, ${g}, ${b}, 0.5)`;
 }
 
