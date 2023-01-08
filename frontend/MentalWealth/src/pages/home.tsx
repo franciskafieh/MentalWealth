@@ -1,22 +1,17 @@
 import {
-    Anchor,
     Box,
     Button,
     Card,
     Center,
     Group,
-    Loader,
     SimpleGrid,
-    Space,
+    Stack,
     Text,
     Title,
     createStyles,
-    useMantineTheme,
 } from "@mantine/core";
 
 import { FullScreenLoading } from "../components/fullScreenLoading";
-import { HelperHome } from "../components/helperHomePage";
-import { IconDots } from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { MoodChart } from "../components/moodLineChart";
 import dayjs from "dayjs";
@@ -139,14 +134,18 @@ const JournalEntries = () => {
 const HomeScreenJournalEntry = (props: { id: number; title: string; updatedAt: string }) => {
     return (
         <>
-            <Card p="xl" radius="md" withBorder component="a" href={"/journal/" + props.id}>
-                <Text fz="xl" truncate>
-                    {props.title}
-                </Text>
-                <Text color="dimmed" size="xs">
-                    Last edited:
-                </Text>
-                <Text size="sm">{dayjs(props.updatedAt).format("DD MMM YYYY")}</Text>
+            <Card p="md" radius="md" withBorder component="a" href={"/journal/" + props.id} >
+                <Stack justify="space-between">
+                    <Text size="xl" weight="bolder" truncate>
+                        {props.title}
+                    </Text>
+                    <Box>
+                        <Text color="dimmed" size="xs">
+                            Last edited:
+                        </Text>
+                        <Text size="sm">{dayjs(props.updatedAt).format("DD MMM YYYY")}</Text>
+                    </Box>
+                </Stack>
             </Card>
         </>
     );

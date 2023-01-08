@@ -5,9 +5,6 @@ import { components } from "../schema";
 import dayjs from "dayjs";
 
 const useStyles = createStyles((theme) => ({
-    label: {
-        lineHeight: 1,
-    },
     lead: {
         fontWeight: 700,
         fontSize: 22,
@@ -48,7 +45,7 @@ export const JournalEntryCard = ({
         <Card withBorder p="xl" radius="md">
             <Box className={classes.inner}>
                 <Box className={classes.labels}>
-                    <Text size="xl" className={classes.label} weight="bolder">
+                    <Text size="xl" weight="bolder">
                         {journalEntry.title}
                     </Text>
                     <Box mt="xs">

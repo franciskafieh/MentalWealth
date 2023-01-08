@@ -34,8 +34,8 @@ const links = [
         label: "Journal",
     },
     {
-        link: "/chats",
-        label: "Chats",
+        link: "/chat",
+        label: "Chat",
     },
 ];
 
