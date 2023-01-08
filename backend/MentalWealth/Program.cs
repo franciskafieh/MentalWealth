@@ -1,6 +1,9 @@
 using Ganss.Xss;
 using MentalWealth.Auth;
 using MentalWealth.Data;
+using MentalWealth.Realtime;
+using MentalWealth.Realtime.Services;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,11 +38,14 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+builder.Services.AddSignalR();
+
 builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<HtmlSanitizer>();
+builder.Services.AddSingleton<IChatService, ChatService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMemoryCache();
@@ -58,6 +64,16 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors(config =>
+    config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
 app.MapControllers();
+app.UseWebSockets();
+app.MapHub<ChatHub>("/Hubs/Chat", o =>
+{
+    o.Transports =
+        HttpTransportType.WebSockets |
+        HttpTransportType.LongPolling;
+});
 
 app.Run();

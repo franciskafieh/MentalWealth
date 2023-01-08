@@ -83,7 +83,6 @@ export const JournalEntryCard = ({
                                 <Text
                                     align="center"
                                     size="lg"
-                                    className={classes.label}
                                     sx={{ fontSize: 22 }}
                                 >
                                     {((journalEntry.moodLevel / 5) * 100).toFixed(0)}%

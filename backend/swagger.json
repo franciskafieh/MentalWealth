@@ -397,69 +397,10 @@
                     }
                 }
             }
-        },
-        "/User/Roles": {
-            "get": {
-                "tags": ["User"],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/User/Helper": {
-            "put": {
-                "tags": ["User"],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/HelperUpdateRequest"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/HelperUpdateRequest"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/HelperUpdateRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    }
-                }
-            }
         }
     },
     "components": {
         "schemas": {
-            "HelperUpdateRequest": {
-                "required": ["helper"],
-                "type": "object",
-                "properties": {
-                    "helper": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false
-            },
             "JournalCreateRequest": {
                 "required": ["content", "moodLevel", "title"],
                 "type": "object",
@@ -599,13 +540,6 @@
                     },
                     "userName": {
                         "type": "string",
-                        "nullable": true
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
                         "nullable": true
                     }
                 },

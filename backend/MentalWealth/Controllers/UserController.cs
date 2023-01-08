@@ -38,14 +38,6 @@ public class UserController : Controller
         return Ok(_mapper.Map<UserResponse>(user));
     }
 
-    [Authorize]
-    [HttpGet("Roles")]
-    public ActionResult<IEnumerable<string>> GetRoles()
-    {
-        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-        return Ok(roles);
-    }
-
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> DeleteSelf()
@@ -57,20 +49,5 @@ public class UserController : Controller
 
         return NoContent();
     }
-
-    [HttpPut("Helper")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> HelperUpdate([FromBody] HelperUpdateRequest request)
-    {
-        var user = await _dbContext.Users.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        if (!await _roleManager.RoleExistsAsync("Helper")) await _roleManager.CreateAsync(new IdentityRole("Helper"));
-
-        if (request.Helper && !User.IsInRole("Helper"))
-            await _userManager.AddToRoleAsync(user!, "Helper");
-        else if (!request.Helper && User.IsInRole("Helper")) await _userManager.RemoveFromRoleAsync(user!, "Helper");
-
-        await _dbContext.SaveChangesAsync();
-        return NoContent();
-    }
+    
 }

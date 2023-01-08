@@ -98,7 +98,6 @@ public class AuthController : Controller
         var token = _authService.GetAuthToken(authClaims);
 
         var userResponse = _mapper.Map<LoginResponseUser>(user);
-        userResponse.Roles = authClaims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
 
         if (request.Remember)
         {
@@ -148,7 +147,6 @@ public class AuthController : Controller
         var authToken = _authService.GetAuthToken(authClaims);
 
         var userResponse = _mapper.Map<LoginResponseUser>(refreshToken.User);
-        userResponse.Roles = authClaims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
 
         var cookieOptions = new CookieOptions
         {

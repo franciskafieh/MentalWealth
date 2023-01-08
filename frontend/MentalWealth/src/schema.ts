@@ -228,42 +228,12 @@ export interface paths {
       };
     };
   };
-  "/User/Roles": {
-    get: {
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            "application/json": (string)[];
-          };
-        };
-      };
-    };
-  };
-  "/User/Helper": {
-    put: {
-      requestBody?: {
-        content: {
-          "application/json": components["schemas"]["HelperUpdateRequest"];
-          "text/json": components["schemas"]["HelperUpdateRequest"];
-          "application/*+json": components["schemas"]["HelperUpdateRequest"];
-        };
-      };
-      responses: {
-        /** @description No Content */
-        204: never;
-      };
-    };
-  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    HelperUpdateRequest: {
-      helper: boolean;
-    };
     JournalCreateRequest: {
       title: string;
       /** Format: int32 */
@@ -312,7 +282,6 @@ export interface components {
       id?: string | null;
       email?: string | null;
       userName?: string | null;
-      roles?: (string)[] | null;
     };
     ProblemDetails: {
       type?: string | null;
