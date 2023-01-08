@@ -278,6 +278,7 @@ const Chat = (): JSX.Element => {
                         onChange={(event) => setMessage(event.currentTarget.value)}
                         sx={{ flex: 1 }}
                         placeholder="Type a message"
+                        id="input-msg"
                     />
                     <Button
                         onClick={async () => {
@@ -286,6 +287,8 @@ const Chat = (): JSX.Element => {
                                 ...messages,
                                 { message, own: true, date: new Date() },
                             ]);
+                            // reset input box after send
+                            setMessage("");
                         }}
                     >
                         Send
