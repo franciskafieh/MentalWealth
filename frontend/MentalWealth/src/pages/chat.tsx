@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import { showNotification } from "@mantine/notifications";
 import { useApiStore } from "../store/apiStore";
 import { useAuthToken } from "../hooks/useAuthToken";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
     container: {
@@ -43,7 +44,6 @@ interface Message {
 const Chat = (): JSX.Element => {
     const { classes } = useStyles();
     const accessToken = useAuthToken();
-    const user = useApiStore((state) => state.user);
 
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const [joined, setJoined] = useState<boolean>(false);
@@ -55,12 +55,12 @@ const Chat = (): JSX.Element => {
     const [message, setMessage] = useState<string>("");
 
     useEffect(() => {
-        (async () => {
-            const hubConnection = new HubConnectionBuilder()
-                .withUrl("/api/Hubs/Chat", { accessTokenFactory: () => accessToken })
-                .configureLogging(LogLevel.Information)
-                .build();
+        const hubConnection = new HubConnectionBuilder()
+        .withUrl("/api/Hubs/Chat", { accessTokenFactory: () => accessToken })
+        .configureLogging(LogLevel.Information)
+        .build();
 
+        (async () => {
             hubConnection.on("Joined", () => {
                 console.log("Joined");
                 setJoined(true);
@@ -98,14 +98,15 @@ const Chat = (): JSX.Element => {
                 console.log("Connected");
                 await connection?.invoke("Join");
                 setConnection(hubConnection);
+
+
             } catch (err) {
                 console.error(err);
             }
         })();
 
         return () => {
-            connection?.invoke("Leave");
-            connection?.stop();
+            hubConnection.stop();
         };
     }, [accessToken]);
 
