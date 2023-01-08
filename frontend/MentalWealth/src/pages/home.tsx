@@ -16,14 +16,8 @@ import { Link } from "react-router-dom";
 import { MoodChart } from "../components/moodLineChart";
 import dayjs from "dayjs";
 import { fetcher } from "../utils/fetcher";
-import { hexToRgb } from "../utils/colors";
 import { useApiStore } from "../store/apiStore";
 import { useQuery } from "@tanstack/react-query";
-
-function getHalfOpacityFromHex(hex: string) {
-    const [r, g, b] = hexToRgb(hex);
-    return `rgba(${r}, ${g}, ${b}, 0.5)`;
-}
 
 const useStyles = createStyles((theme) => ({
     errorContainer: {

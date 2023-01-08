@@ -12,6 +12,7 @@ import {
     TextInput,
     Title,
     createStyles,
+    Affix,
 } from "@mantine/core";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import dayjs, { ManipulateType } from "dayjs";
@@ -40,6 +41,11 @@ const useStyles = createStyles((theme) => ({
         position: "fixed",
         flexDirection: "column",
     },
+    chatInput: {
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
+    }
 }));
 
 interface Message {
@@ -232,7 +238,7 @@ const Chat = (): JSX.Element => {
     ));
 
     const openShareEntryModal = () => {
-
+        const { classes } = useStyles();
 
         openModal({
             title: "Share journal entry",
@@ -274,28 +280,30 @@ const Chat = (): JSX.Element => {
                     </Group>
                 </Group>
                 {renderedMessages}
-                <Group>
-                    <Input
-                        value={message}
-                        onChange={(event) => setMessage(event.currentTarget.value)}
-                        sx={{ flex: 1 }}
-                        placeholder="Type a message"
-                        id="input-msg"
-                    />
-                    <Button
-                        onClick={async () => {
-                            await connection?.invoke("SendMessage", message);
-                            setMessages((messages) => [
-                                ...messages,
-                                { message, own: true, date: new Date() },
-                            ]);
-                            // reset input box after send
-                            setMessage("");
-                        }}
-                    >
-                        Send
-                    </Button>
-                </Group>
+                {/* <Affix position={{ bottom: 20 }}> */}
+                    <Group>
+                        <Input
+                            value={message}
+                            onChange={(event) => setMessage(event.currentTarget.value)}
+                            sx={{ flex: 1 }}
+                            placeholder="Type a message"
+                            id="input-msg"
+                        />
+                        <Button
+                            onClick={async () => {
+                                await connection?.invoke("SendMessage", message);
+                                setMessages((messages) => [
+                                    ...messages,
+                                    { message, own: true, date: new Date() },
+                                ]);
+                                // reset input box after send
+                                setMessage("");
+                            }}
+                        >
+                            Send
+                        </Button>
+                    </Group>
+                {/* </Affix> */}
             </>
         );
     }
