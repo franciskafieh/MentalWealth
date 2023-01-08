@@ -9,38 +9,44 @@ import {
     createStyles,
     useMantineTheme,
 } from "@mantine/core";
-import { IconBook, IconLifebuoy, IconLink, IconLock, IconUserSearch, TablerIcon } from "@tabler/icons";
+import { IconBook, IconLifebuoy, IconLink, IconLock, IconUserSearch, TablerIcon, IconMoodHappy } from "@tabler/icons";
 
 export const homeData = [
     {
         icon: IconLifebuoy,
         title: "Help others",
         description:
-        "Help others by listening to their problems and giving them advice. You can also help by sharing your own experiences. Whether you want to do this or not is up to you.",
+        "Listen to others and giving them advice. Share your experiences.",
     },
     {
         icon: IconBook,
         title: "Keep your personal journal",
         description:
-        "Keep a personal journal of your thoughts and feelings. Add entries anywhere at anytime or even share them with helpers.",
+        "Keep a personal journal of your thoughts and feelings. Add entries anywhere, anytime. Optionally, share them with others.",
     },
     {
         icon: IconLink,
         title: "Connect with others",
         description:
-        "Find others who want to help you. Connect with them and talk about your problems.",
+        "Find someone that could make your day just that much better.",
     },
     {
         icon: IconLock,
         title: "Don't worry about your privacy",
         description:
-        "Everything you do on MentalWealth is private. We don't store any of your chats and we store journals in an encrypted way.",
+        "Everything you do on MentalWealth is private. We don't store any of your chats, and journals are encrypted.",
     },
     {
         icon: IconUserSearch,
-        title: "Be anonymous",
+        title: "Stay anonymous",
         description:
-        "Connect with real people and talk anonimously about your mental health. We don't store any data (not even the messages) about you.",
+        "Connect with real people, yet stay anonymous. We do not share any of your personal information or metadata with anyone.",
+    },
+    {
+        icon: IconMoodHappy,
+        title: "Track your mood",
+        description:
+        "Identify trends in your feelings. Control the mystery in your emotions.",
     },
 ];
 
