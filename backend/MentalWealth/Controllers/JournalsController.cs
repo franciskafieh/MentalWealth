@@ -33,7 +33,7 @@ public class JournalsController : Controller
     public async Task<ActionResult<IEnumerable<JournalIndexResponse>>> Index()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var journals = _dbContext.JournalEntries.Where(j => j.AuthorId == userId).ToList().OrderByDescending(j => j.UpdatedAt);
+        var journals = await _dbContext.JournalEntries.Where(j => j.AuthorId == userId).OrderByDescending(j => j.UpdatedAt).ToListAsync();
         return Ok(_mapper.Map<IEnumerable<JournalIndexResponse>>(journals));
     }
 
