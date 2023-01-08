@@ -41,11 +41,6 @@ const useStyles = createStyles((theme) => ({
         position: "fixed",
         flexDirection: "column",
     },
-    chatInput: {
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-    }
 }));
 
 interface Message {
@@ -238,8 +233,6 @@ const Chat = (): JSX.Element => {
     ));
 
     const openShareEntryModal = () => {
-        const { classes } = useStyles();
-
         openModal({
             title: "Share journal entry",
             children: <ShareEntryModalContent connection={connection} />,
@@ -280,7 +273,7 @@ const Chat = (): JSX.Element => {
                     </Group>
                 </Group>
                 {renderedMessages}
-                {/* <Affix position={{ bottom: 20 }}> */}
+                <Affix position={{ bottom: 20, left: 16, right: 16 }}>
                     <Group>
                         <Input
                             value={message}
@@ -303,7 +296,7 @@ const Chat = (): JSX.Element => {
                             Send
                         </Button>
                     </Group>
-                {/* </Affix> */}
+                </Affix>
             </>
         );
     }
